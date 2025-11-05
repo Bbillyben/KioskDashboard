@@ -1,0 +1,22 @@
+<div class="main-page-cont">
+<h3> Bientôt parmis nous</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Nom</th>
+      <th scope="col">Date d'arrivée</th>
+      <th scope="col">N+1</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for emp in employees%}
+    <tr>
+      <td>{{emp}}</td>
+      <td>{{emp.entry_date}}</td>
+      <td>{{emp.superiors_names}}</td>
+    </tr>
+    {%endfor%}
+   
+  </tbody>
+</table>
+</div>

@@ -1,0 +1,199 @@
+<style>
+/* for calendar */
+  .fc-timeline-slot-lane.fc-day-sat, .fc-timeline-slot-lane.fc-day-sun, .fc-timeline-slot-lane.fc-slot-sat, .fc-timeline-slot-lane.fc-slot-sun{
+    background-color: rgba(211, 211, 211, 0.322);
+  } 
+  .fc-daygrid-day.fc-day-sat, .fc-daygrid-day.fc-day-sun {
+    background-color: rgba(211, 211, 211, 0.322);
+  } 
+  .fc-timeline-slot-lane.fc-day-today, .fc-timeline-slot-lane.fc-slot-today, .fc-daygrid-day.fc-day-today, .fc-daygrid-day.fc-slot-today{
+    background-color: #335d8862 !important;
+  }
+  .resource-name{
+    float: left;
+  }
+
+  .resource .desc{
+    white-space: collapse;
+    font-style: italic;
+    font-size: small;
+  }
+
+
+
+  .initial-circle{
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  .initial-circle-inner{
+    font-size: 0.6em;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    text-decoration: none;
+    height: 15px;
+    width: 15px;
+    font-weight: bold;
+  }
+  .ressource-cont{
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    overflow: hidden;
+    
+}
+.row-header{
+    margin: 1rem 1rem 1rem 1rem;
+    border-bottom: thin solid;
+    border-bottom-color: currentcolor;
+}
+</style>    
+<div class="main-page-cont">
+    <div class = "row">
+        <div class="col {% if leaves %}col-md-9{%endif%}">
+            <div class="card ">
+                <div class="row-header">
+                   <h3> Calendrier Absence </h3>
+                </div>
+                <div id="calendar-cont"></div>
+            </div>
+        </div>
+        {% if leaves %}
+        <div class="col">
+            <div class="card  mb-2">
+                <div class="row-header">
+                    <h3>Absences du jour</h3>
+                </div>
+                <div id="absent">
+                    <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Date de retour</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for leave in leaves%}
+                        <tr>
+                        <td>{{leave.employee}}</td>
+                        <td>{{leave.end_date}}</td>
+                        </tr>
+                        {%endfor%}
+                    
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {%endif%}
+    </div>
+
+</div>
+<script>
+    function getInitials(words) {
+        return words
+        .split(' ')
+        .map(word => word[0].toUpperCase());
+    }
+    function eventRender (event, createElement){
+                htmlEvt = ""
+                
+                if (event.event.display == "background" && event.event.extendedProps.origin == "lm")return  { html: "" }
+
+
+                if(event.view.type.toUpperCase().includes("YEAR")){
+                    start=event.event.start;
+                    end = event.event.end;
+                    if(!end)end = start   ;   
+                    if (end.getUTCHours() != 12 )end.setDate(end.getDate()-1);  
+                    const day1 = start.getDate();
+                    const month1 = start.getMonth()+1;
+                    const day2 = end.getDate();
+                    const month2 = end.getMonth()+1;
+
+                    dateField=day1 + (month1 != month2 ? "/" + month1:"") + ( day1 != day2 || month1 != month2 ? ' → ' + day2 + (month1 != month2 ? "/" + month2:""):"")
+                    htmlEvt = ' <span style="font-size:0.7em;font-weight:italic;">'+ dateField +' ⦿ </span>'+" "+htmlEvt;
+                }
+
+
+
+            props = event.event.extendedProps
+            if(props.origin=="lm"){
+                if(event.view.type.toUpperCase().includes("RESOURCE")){
+                    htmlEvt += "<span class='resource-name'>"+props.type+"</span>" + '<span class="initial-circle"><span class="initial-circle-inner">'+ getInitials(props.employee).join('')+'</span></span>';
+                    htmlEvt = "<div class='ressource-cont'>"+htmlEvt+"</div>"
+                }else if(event.view.type.toUpperCase().includes("GRID")){
+                    htmlEvt += props.employee + ' <small>-'+ props.type+'</small>';
+                }else{
+                    htmlEvt += props.employee + " - " + props.type;
+                }
+            }else if(event.event._def.title){
+                htmlEvt += event.event._def.title;
+            }else{
+                htmlEvt += "<div style='min-height:1em;'></div>";
+            }
+            
+
+            
+
+
+            if (props.start_period_di == "Middle" ||  props.end_period_di== "Middle"){
+                htmlEvt = '<span style="width:50%;">'+htmlEvt+'</span>'
+            }
+            return  { html: htmlEvt }
+        }
+    function start_{{id}}(){
+            option={
+                eventContent: eventRender,
+                schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+                initialView: 'resourceBiMensualCustom',
+                selectable: false,
+                editable: false,
+                 resources: {{resources|safe}},
+                events: {{events|safe}},
+                resourceAreaHeaderContent: 'Ressources',
+                slotMinWidth: 10,
+                resourceAreaWidth: "10%",
+                height:"auto",
+                headerToolbar:{left: '',
+                    center: '',
+                    right:''
+                 },
+                views:{
+                    resourceBiMensualCustom: {
+                        type: 'resourceTimeline',
+                        buttonText: 'Bi Mensual',
+                        dateIncrement: { months: 1 },
+                        slotDuration: { days: 1 },
+                        slotLabelInterval: {
+                            "days": 1
+                        },
+                        slotLabelFormat: [{
+                            month: 'long',
+                        }, // top level of text
+                        {
+                            day:'numeric',
+                    
+                        }, // lower level of text
+                        ],
+                        visibleRange: function (currentDate) {
+                            const start = new Date(currentDate);
+                            start.setDate(start.getDate()-1);
+                            const end = new Date(currentDate);
+                            end.setDate(end.getDate() + {{calendar_dur}});
+                            return {
+                                start: start.toISOString(),
+                                end: end.toISOString()
+                            };
+                        }
+                    }
+                }
+            }
+            
+            var calendarEl = document.getElementById('calendar-cont');
+            var calendar = new FullCalendar.Calendar(calendarEl, option);
+            calendar.render();
+        }
+</script>
