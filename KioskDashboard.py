@@ -102,7 +102,7 @@ def view_dash(request):
     pages = []
     ## if has a leav or show empty 
     if qset.exists() or show_empty:
-        emp = Employee.objects.filter(pk__in=qset.values('employee')).order_by('first_name')
+        emp = Employee.objects.filter(pk__in=qset.values_list('employee', flat=True))
         
         curr_leave = Leave.current.all()
         context = {
@@ -118,20 +118,6 @@ def view_dash(request):
             "title":"Leave Calendar",
             "html": render(request, f"{KioskDashboard.SLUG}/calendar.html",context ).content.decode('utf-8')
         })
-    
-    #######  Les absent du jour
-    # curr_leave = Leave.current.all()
-    # # curr_emp = Employee.objects.filter(pk__in=curr_leave.values('employee')).order_by('first_name')
-    # if curr_leave.exists() or show_empty:
-    #     context = {
-    #         "id":2,
-    #         'leaves':curr_leave
-    #     }
-    #     pages.append({
-    #         "id":2,
-    #         "title":"page 2",
-    #         "html": render(request, f"{KioskDashboard.SLUG}/absent.html",context ).content.decode('utf-8')
-    #     })
     
     ###### les arrivée prochaines*
     prev_date = (now + relativedelta(days=-15))
