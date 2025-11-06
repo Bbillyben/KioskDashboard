@@ -1,0 +1,323 @@
+/* for calendar */
+{% if theme == "white" %}
+  .fc-timeline-slot-lane.fc-day-sat, .fc-timeline-slot-lane.fc-day-sun, .fc-timeline-slot-lane.fc-slot-sat, .fc-timeline-slot-lane.fc-slot-sun{
+    background-color: rgba(211, 211, 211, 0.322);
+  } 
+  .fc-daygrid-day.fc-day-sat, .fc-daygrid-day.fc-day-sun {
+    background-color: rgba(211, 211, 211, 0.322);
+  } 
+  .fc-timeline-slot-lane.fc-day-today, .fc-timeline-slot-lane.fc-slot-today, .fc-daygrid-day.fc-day-today, .fc-daygrid-day.fc-slot-today{
+    background-color: #335d8862 !important;
+  }
+  .resource-name{
+    float: left;
+  }
+
+  .resource .desc{
+    white-space: collapse;
+    font-style: italic;
+    font-size: small;
+  }
+
+  .initial-circle{
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+    margin-right: 5px;
+    border-radius: 50%;
+  }
+  .initial-circle-inner{
+    font-size: 0.6em;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    text-decoration: none;
+    height: 15px;
+    width: 15px;
+    font-weight: bold;
+  }
+  .ressource-cont{
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    overflow: hidden;
+    
+}
+.row-header{
+    margin: 1rem 1rem 1rem 1rem;
+    border-bottom: thin solid;
+    border-bottom-color: currentcolor;
+}
+{%else%}
+/* === DARK THEME GLOBAL === */
+
+body {
+  background-color: #121212; /* fond général très sombre */
+  color: #e0e0e0; /* texte clair */
+  font-family: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Liens */
+a {
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  color: #76b0ff;
+  text-decoration: underline;
+}
+
+/* Titres */
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff;
+}
+
+/* Paragraphes, listes, etc. */
+p, li {
+  color: #d0d0d0;
+}
+
+/* Bordures ou séparateurs */
+hr {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tableaux génériques */
+/* === TABLES DARK THEME === */
+
+/* Affecte toutes les cellules du tableau */
+.table > :not(caption) > * > * {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* En-têtes (thead) */
+.table > thead > tr > * {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+/* Lignes paires du tbody */
+.table > tbody > tr:nth-child(even) > * {
+  background-color: #1a1a1a !important;
+}
+
+/* Effet hover */
+.table > tbody > tr:hover > * {
+  background-color: #2d2d2d !important;
+  color: #fff !important;
+}
+
+/* Supprime les fonds forcés si Bootstrap met des vars CSS */
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: transparent;
+  --bs-table-hover-bg: transparent;
+}
+
+
+/* === FULLCALENDAR DARK THEME ADAPTATION === */
+
+/* Weekends background (Saturday, Sunday) */
+.fc-timeline-slot-lane.fc-day-sat,
+.fc-timeline-slot-lane.fc-day-sun,
+.fc-timeline-slot-lane.fc-slot-sat,
+.fc-timeline-slot-lane.fc-slot-sun,
+.fc-daygrid-day.fc-day-sat,
+.fc-daygrid-day.fc-day-sun {
+  background-color: rgba(255, 255, 255, 0.3); /* léger gris clair transparent */
+}
+
+/* Today background */
+.fc-timeline-slot-lane.fc-day-today,
+.fc-timeline-slot-lane.fc-slot-today,
+.fc-daygrid-day.fc-day-today,
+.fc-daygrid-day.fc-slot-today {
+  background-color: rgba(51, 93, 136, 0.4) !important; /* bleu-gris semi-transparent */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Texte global dans le calendrier */
+.fc,
+.fc-theme-standard {
+  color: #e0e0e0; /* texte clair */
+  background-color: #1e1e1e; /* fond global */
+}
+
+/* Lignes de séparation / bordures */
+.fc .fc-scrollgrid,
+.fc .fc-col-header-cell,
+.fc .fc-timegrid-slot {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* === RESSOURCES === */
+.resource-name {
+  float: left;
+  color: #f0f0f0;
+}
+
+.resource .desc {
+  white-space: collapse;
+  font-style: italic;
+  font-size: small;
+  color: #a0a0a0;
+}
+
+/* Initials Circle (avatar style) */
+.initial-circle {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
+.initial-circle-inner {
+  font-size: 0.6em;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  text-decoration: none;
+  height: 15px;
+  width: 15px;
+  font-weight: bold;
+}
+
+/* Conteneur de ressource */
+.ressource-cont {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  overflow: hidden;
+  color: #ddd;
+}
+
+/* Header de ligne */
+.row-header {
+  margin: 1rem;
+  border-bottom: thin solid rgba(255, 255, 255, 0.2);
+  color: #f0f0f0;
+}
+
+/* === BOOTSTRAP DARK COMPAT === */
+
+/* Pour harmoniser avec les cartes Bootstrap */
+.card {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header {
+  background-color: #333;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-body {
+  background-color: #2a2a2a;
+  color: #ddd;
+}
+
+/* Boutons bootstrap adaptés */
+.btn {
+  border-radius: 0.25rem;
+}
+
+.btn-primary {
+  background-color: #335d88;
+  border-color: #335d88;
+}
+
+.btn-primary:hover {
+  background-color: #4a7db5;
+  border-color: #4a7db5;
+}
+
+/* Scrollbars discrètes (optionnel) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+}
+/* === FULLCALENDAR DARK THEME FIXES === */
+
+/* Zone de gauche : titres des ressources */
+.fc-datagrid-cell,
+.fc-datagrid-header,
+.fc-datagrid-cell-frame {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Lignes alternées dans la colonne des ressources */
+.fc-datagrid-cell:nth-child(even) {
+  background-color: #1a1a1a !important;
+}
+
+/* En-tête du calendrier (jours, mois, etc.) */
+.fc-col-header-cell,
+.fc-timeline-header-row {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Texte des en-têtes (jours, mois) */
+.fc-col-header-cell-cushion {
+  color: #ffffff !important;
+}
+
+/* Bordures globales */
+.fc-scrollgrid,
+.fc-scrollgrid-sync-table {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fond de la zone du calendrier (timeline area) */
+.fc-timeline-body,
+.fc-timeline-body table {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+}
+
+/* Scrollbar dans la zone timeline */
+.fc-scroller::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.fc-scroller::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+.fc-scroller::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+}
+
+/* Style des events dans le calendrier */
+.fc-event {
+  background-color: #335d88;
+  color: #fff;
+  border: none;
+}
+.fc-event:hover {
+  background-color: #4a7db5;
+}
+
+/* Ajustement du fond de la timeline "today" */
+.fc-timeline-slot-lane.fc-day-today,
+.fc-timeline-slot-lane.fc-slot-today {
+  background-color: rgba(51, 93, 136, 0.9) !important;
+}
+
+{%endif%}

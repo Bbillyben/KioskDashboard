@@ -1,22 +1,55 @@
 <div class="main-page-cont">
-<h3> Bientôt parmis nous</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Nom</th>
-      <th scope="col">Date d'arrivée</th>
-      <th scope="col">N+1</th>
-    </tr>
-  </thead>
-  <tbody>
-    {%for emp in employees%}
-    <tr>
-      <td>{{emp}}</td>
-      <td>{{emp.entry_date}}</td>
-      <td>{{emp.superiors_names}}</td>
-    </tr>
-    {%endfor%}
-   
-  </tbody>
-</table>
+<div class = "row">
+  <div class="col {% if birthday %}col-md-9{%endif%}">
+      <div class="card ">
+          <div class="row-header">
+              <h3> Bientôt parmis nous </h3>
+          </div>
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Nom</th>
+                  <th scope="col">Date d'arrivée</th>
+                  <th scope="col">N+1</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%for emp in employees%}
+                <tr>
+                  <td>{{emp}}</td>
+                  <td>{{emp.entry_date}}</td>
+                  <td>{{emp.superiors_names}}</td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+      </div>
+  </div>
+  {% if birthday %}
+  <div class="col">
+      <div class="card">
+          <div class="row-header">
+              <h3> Happy Birthday </h3>
+          </div>
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                 
+                </tr>
+              </thead>
+              <tbody>
+                {%for emp in birthday%}
+                <tr>
+                  <td>{{emp}}</td>
+                </tr>
+                {%endfor%}
+              </tbody>
+            </table>
+          </div>
+      </div>
+  </div>
+  {%endif%}
 </div>

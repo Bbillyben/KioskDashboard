@@ -1,54 +1,5 @@
 <style>
-/* for calendar */
-  .fc-timeline-slot-lane.fc-day-sat, .fc-timeline-slot-lane.fc-day-sun, .fc-timeline-slot-lane.fc-slot-sat, .fc-timeline-slot-lane.fc-slot-sun{
-    background-color: rgba(211, 211, 211, 0.322);
-  } 
-  .fc-daygrid-day.fc-day-sat, .fc-daygrid-day.fc-day-sun {
-    background-color: rgba(211, 211, 211, 0.322);
-  } 
-  .fc-timeline-slot-lane.fc-day-today, .fc-timeline-slot-lane.fc-slot-today, .fc-daygrid-day.fc-day-today, .fc-daygrid-day.fc-slot-today{
-    background-color: #335d8862 !important;
-  }
-  .resource-name{
-    float: left;
-  }
-
-  .resource .desc{
-    white-space: collapse;
-    font-style: italic;
-    font-size: small;
-  }
-
-
-
-  .initial-circle{
-    background-color: rgba(255, 255, 255, 0.5);
-    color: black;
-    margin-right: 5px;
-    border-radius: 50%;
-  }
-  .initial-circle-inner{
-    font-size: 0.6em;
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-    text-decoration: none;
-    height: 15px;
-    width: 15px;
-    font-weight: bold;
-  }
-  .ressource-cont{
-    justify-content: space-between;
-    align-items: center;
-    display: flex;
-    overflow: hidden;
-    
-}
-.row-header{
-    margin: 1rem 1rem 1rem 1rem;
-    border-bottom: thin solid;
-    border-bottom-color: currentcolor;
-}
+    {% include "kiosk/calendar_css.css" %}
 </style>    
 <div class="main-page-cont">
     <div class = "row">
@@ -60,32 +11,10 @@
                 <div id="calendar-cont"></div>
             </div>
         </div>
+        
         {% if leaves %}
         <div class="col">
-            <div class="card  mb-2">
-                <div class="row-header">
-                    <h3>Absences du jour</h3>
-                </div>
-                <div id="absent">
-                    <table class="table">
-                    <thead>
-                        <tr>
-                        <th scope="col">Nom</th>
-                        <th scope="col">Date de retour</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {%for leave in leaves%}
-                        <tr>
-                        <td>{{leave.employee}}</td>
-                        <td>{{leave.end_date}}</td>
-                        </tr>
-                        {%endfor%}
-                    
-                    </tbody>
-                    </table>
-                </div>
-            </div>
+           {% include "kiosk/absent.html" %}
         </div>
         {%endif%}
     </div>

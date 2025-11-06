@@ -12,7 +12,9 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Value, TextField
 from django.db.models.functions import Concat
 from django.contrib.postgres.aggregates import StringAgg
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
+import requests
+
 from plugin import LabManagerPlugin
 from plugin.mixins import UrlsMixin, SettingsMixin
 
@@ -71,6 +73,31 @@ class KioskDashboard(UrlsMixin, SettingsMixin, LabManagerPlugin):
             'default': 60,
             'validator': [int, MinValueValidator(7)]
         },
+        'THEME': {
+            'name': _('Theme'),
+            'description': _('Select Theme to be displayed'),
+            'default': 'white',
+            'choices': [
+                ('white', 'White'),
+                ('dark', 'Dark')
+            ],
+        },
+        'NCBI_KEY': {
+            'name': _('NCBI Key'),
+            'default': '',
+            'description': _('A NCBI API key to request'),
+        },
+        'NCBI_SEARCH': {
+            'name': _('NCBI Search'),
+            'default': '',
+            'description': _('A search string to request NCBI for'),
+        },
+        'NCBI_MAX': {
+            'name': _('Max Articles'),
+            'description': _('set max number of article to show'),
+            'default': 5,
+            'validator': [int, MinValueValidator(1), MaxValueValidator(10)]
+        },
      }
     
     def setup_urls(self):
@@ -90,6 +117,10 @@ def view_dash(request):
     reload_interval = KioskDashboard.get_setting(KioskDashboard(), key="RELOAD_INTERVAL")
     show_title = KioskDashboard.get_setting(KioskDashboard(), key="SHOW_TITLE")
     calendar_dur = KioskDashboard.get_setting(KioskDashboard(), key="CALENDAR_DUR")
+    theme = KioskDashboard.get_setting(KioskDashboard(), key="THEME")
+    api_key = KioskDashboard.get_setting(KioskDashboard(), key="NCBI_KEY")
+    api_search = KioskDashboard.get_setting(KioskDashboard(), key="NCBI_SEARCH")
+    api_max = KioskDashboard.get_setting(KioskDashboard(), key="NCBI_MAX")
     #######   Calendrier des absences
     queryset = Leave.objects.select_related('employee', 'type').all()
     now = datetime.datetime.now()
@@ -110,20 +141,25 @@ def view_dash(request):
             'events': json.dumps(serializers.LeaveSerializer1DCal(qset, many=True).data, cls=DjangoJSONEncoder, ensure_ascii=False),
             'resources': json.dumps(serializers.EmployeeSerialize_Cal(emp, many=True).data, cls=DjangoJSONEncoder, ensure_ascii=False),
             'calendar_dur':int(calendar_dur),
+            'theme':theme,
             'leaves':curr_leave,
         }
         
         pages.append({
             "id":1,
-            "title":"Leave Calendar",
+            "title":"Absence",
             "html": render(request, f"{KioskDashboard.SLUG}/calendar.html",context ).content.decode('utf-8')
         })
     
     ###### les arrivée prochaines*
+    today = datetime.date.today()  # juste la date actuelle
     prev_date = (now + relativedelta(days=-15))
     query= Q(entry_date__gte=prev_date) & Q(entry_date__lte=end_date)
     emp = Employee.objects.filter(query).order_by("entry_date")
-    if emp.exists() or show_empty:
+    emp_anniv = Employee.objects.filter(birth_date__month=today.month,
+                                    birth_date__day=today.day
+                                   ).order_by("first_name")
+    if emp.exists() or emp_anniv.exists() or show_empty:
         # Sous-requête pour concaténer les noms des supérieurs pour chaque employé
         emp = Employee.objects.filter(query).annotate(
             superiors_names=StringAgg(
@@ -140,11 +176,70 @@ def view_dash(request):
         context = {
             "id":3,
             'employees':emp,
+            'theme':theme,
+            'birthday':emp_anniv,
         }
         pages.append({
             "id":3,
-            "title":"page 3",
+            "title":"Arrivants",
             "html": render(request, f"{KioskDashboard.SLUG}/arrivee.html",context ).content.decode('utf-8')
+        })
+        
+        
+    ####"# les derniers Articles
+    
+    # Étape 1 : Récupérer les PMIDs avec ESearch
+    date_filter = f"({now.year-5}[DP]:{now.year}[DP])"
+    esearch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={api_search}+AND+{date_filter}&retmax={api_max}&sort=pub+date&api_key={api_key}"
+    response = requests.get(esearch_url)
+    pmids = response.text.split("<Id>")[1:11]  # On prend les 10 premiers résultats
+    pmids = [pmid.split("</Id>")[0] for pmid in pmids]
+
+    
+    # Étape 2 : Récupérer les détails des articles avec EFetch
+    efetch_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={','.join(pmids)}&retmode=xml&api_key={api_key}"
+    response = requests.get(efetch_url)
+    
+    # Parser le XML (exemple simplifié)
+    articles = []
+    if pmids or show_empty:
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(response.text)
+
+        for article in root.findall('.//PubmedArticle'):
+            title = article.find('.//ArticleTitle').text if article.find('.//ArticleTitle') is not None else "No title"
+            authors = ", ".join([author.text for author in article.findall('.//Author/LastName')])
+            journal = article.find('.//Journal/Title').text if article.find('.//Journal/Title') is not None else "No journal"
+            abstract = article.find('.//AbstractText').text if article.find('.//AbstractText') is not None else "No abstract"
+            
+            pub_date = ""
+            pub_date_element = article.find('.//PubDate')
+            if pub_date_element is not None:
+                year = pub_date_element.find('Year').text if pub_date_element.find('Year') is not None else ""
+                month = pub_date_element.find('Month').text if pub_date_element.find('Month') is not None else ""
+                day = pub_date_element.find('Day').text if pub_date_element.find('Day') is not None else ""
+                pub_date = f"{day} {month} {year}".strip() if day or month or year else "No date"
+            else:
+                pub_date = "No date"
+
+            articles.append({
+                "title": title,
+                "authors": authors,
+                "journal": journal,
+                "pub_date": pub_date,
+                "abstract": abstract,
+            })
+        
+        
+        context = {
+            "id":4,
+            "articles":articles,
+            'theme':theme,
+        }
+        pages.append({
+            "id":4,
+            "title":"Articles",
+            "html": render(request, f"{KioskDashboard.SLUG}/articles.html",context ).content.decode('utf-8')
         })
         
     # if page null then add no data page
@@ -154,7 +249,7 @@ def view_dash(request):
             "title":"No Data",
             "html": render(request, f"{KioskDashboard.SLUG}/no_data.html",{} ).content.decode('utf-8')
         })
-        
+    
     
     ### construc final json
     data={

@@ -1,20 +1,24 @@
-<div class="main-page-cont">
-<h3> Absences du jour</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Nom</th>
-      <th scope="col">Date de retour</th>
-    </tr>
-  </thead>
-  <tbody>
-    {%for leave in leaves%}
-    <tr>
-      <td>{{leave.employee}}</td>
-      <td>{{leave.end_date}}</td>
-    </tr>
-    {%endfor%}
-   
-  </tbody>
-</table>
+ <div class="card  mb-2">
+    <div class="row-header">
+        <h3>Absences du jour</h3>
+    </div>
+    <div id="absent">
+        <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Date de retour</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for leave in leaves%}
+            <tr>
+            <td>{{leave.employee}}</td>
+            <td>{{leave.return_date}}</td>
+            </tr>
+            {%endfor%}
+        
+        </tbody>
+        </table>
+    </div>
 </div>

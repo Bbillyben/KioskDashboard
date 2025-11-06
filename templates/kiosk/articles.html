@@ -1,0 +1,25 @@
+<style>
+    {% include "kiosk/article.css" %}
+</style>
+<div class="main-page-cont">
+<h2>Derniers articles PubMed</h2>
+{% if articles %}
+    {% for article in articles %}
+    <div class="article">
+        <div class="title">{{ article.title }}</div>
+        <div class="authors">Auteurs : {{ article.authors }}</div>
+        <span class="journal">Journal : {{ article.journal }}</span>
+        <span class="pub_date">Date : {{ article.pub_date }}</span>
+        {% comment %} <div class="abstract">Résumé : {{ article.abstract }}</div> {% endcomment %}
+    </div>
+    {% endfor %}
+
+    {% if not articles %}
+    <p class="empty-message">Aucun article trouvé.</p>
+    {% endif %}
+{% else %}
+    <p class="empty-message">Aucun article à afficher.</p>
+    {% endif %}
+
+
+</div>
