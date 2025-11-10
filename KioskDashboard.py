@@ -156,8 +156,9 @@ def view_dash(request):
     prev_date = (now + relativedelta(days=-15))
     query= Q(entry_date__gte=prev_date) & Q(entry_date__lte=end_date)
     emp = Employee.objects.filter(query).order_by("entry_date")
+    ## Anniversaires du jours
     emp_anniv = Employee.objects.filter(birth_date__month=today.month,
-                                    birth_date__day=today.day
+                                    birth_date__day=today.day, is_active = True
                                    ).order_by("first_name")
     if emp.exists() or emp_anniv.exists() or show_empty:
         # Sous-requête pour concaténer les noms des supérieurs pour chaque employé
