@@ -96,9 +96,9 @@
                         type: 'resourceTimeline',
                         buttonText: 'Bi Mensual',
                         dateIncrement: { months: 1 },
-                        slotDuration: { days: 1 },
+                        slotDuration: { hours: 12 },
                         slotLabelInterval: {
-                            "days": 1
+                            "hours": 24
                         },
                         slotLabelFormat: [{
                             month: 'long',
@@ -108,6 +108,8 @@
                     
                         }, // lower level of text
                         ],
+                        slotMinTime: "00:00:00",
+                        slotMaxTime: "24:00:00",
                         visibleRange: function (currentDate) {
                             const start = new Date(currentDate);
                             start.setDate(start.getDate()-1);
