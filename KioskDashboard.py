@@ -44,9 +44,9 @@ class KioskDashboard(UrlsMixin, SettingsMixin, LabManagerPlugin):
     SETTINGS = {
         'SLIDE_DURATION': {
             'name': _('Slide Duration'),
-            'description': _('duration for each slides in slideshow (in millisec)'),
-            'default': 5000,
-            'validator': [int, MinValueValidator(3000)]
+            'description': _('duration for each slides in slideshow (in s)'),
+            'default': 5,
+            'validator': [int, MinValueValidator(3)]
         },
         
         'RELOAD_INTERVAL': {
@@ -72,6 +72,24 @@ class KioskDashboard(UrlsMixin, SettingsMixin, LabManagerPlugin):
             'description': _('How many days will be displayed in calendar (in days)'),
             'default': 60,
             'validator': [int, MinValueValidator(7)]
+        },
+        'PAGE1_DUR': {
+            'name': _('Calendar Page Duration'),
+            'description': _('display time in sec'),
+            'default': 60,
+            'validator': [int, MinValueValidator(5)]
+        },
+        'PAGE2_DUR': {
+            'name': _('incomming Employee page Duration'),
+            'description': _('display time in sec'),
+            'default': 20,
+            'validator': [int, MinValueValidator(5)]
+        },
+        'PAGE3_DUR': {
+            'name': _('Pub Med Abstract page Duration'),
+            'description': _('display time in sec'),
+            'default': 20,
+            'validator': [int, MinValueValidator(5)]
         },
         'THEME': {
             'name': _('Theme'),
@@ -113,6 +131,10 @@ class KioskDashboard(UrlsMixin, SettingsMixin, LabManagerPlugin):
 def view_dash(request):
     ### get the settings 
     duration = KioskDashboard.get_setting(KioskDashboard(), key="SLIDE_DURATION")
+    p1_dur = KioskDashboard.get_setting(KioskDashboard(), key="PAGE1_DUR")
+    p2_dur = KioskDashboard.get_setting(KioskDashboard(), key="PAGE2_DUR")
+    p3_dur = KioskDashboard.get_setting(KioskDashboard(), key="PAGE3_DUR")
+    
     show_empty = KioskDashboard.get_setting(KioskDashboard(), key="SHOW_EMPTY")
     reload_interval = KioskDashboard.get_setting(KioskDashboard(), key="RELOAD_INTERVAL")
     show_title = KioskDashboard.get_setting(KioskDashboard(), key="SHOW_TITLE")
@@ -148,7 +170,8 @@ def view_dash(request):
         pages.append({
             "id":1,
             "title":"Absence",
-            "html": render(request, f"{KioskDashboard.SLUG}/calendar.html",context ).content.decode('utf-8')
+            "html": render(request, f"{KioskDashboard.SLUG}/calendar.html",context ).content.decode('utf-8'),
+            "page_duration":p1_dur
         })
     
     ###### les arrivée prochaines*
@@ -183,7 +206,8 @@ def view_dash(request):
         pages.append({
             "id":3,
             "title":"Arrivants",
-            "html": render(request, f"{KioskDashboard.SLUG}/arrivee.html",context ).content.decode('utf-8')
+            "html": render(request, f"{KioskDashboard.SLUG}/arrivee.html",context ).content.decode('utf-8'),
+            "page_duration":p2_dur
         })
         
         
@@ -240,7 +264,8 @@ def view_dash(request):
         pages.append({
             "id":4,
             "title":"Articles",
-            "html": render(request, f"{KioskDashboard.SLUG}/articles.html",context ).content.decode('utf-8')
+            "html": render(request, f"{KioskDashboard.SLUG}/articles.html",context ).content.decode('utf-8'),
+            "page_duration":p3_dur
         })
         
     # if page null then add no data page
