@@ -42,6 +42,11 @@ class KioskDashboard(UrlsMixin, SettingsMixin, LabManagerPlugin):
     VERSION = '1.0.1'
     
     SETTINGS = {
+        'MAIN_TITLE': {
+            'name': _('Main Title'),
+            'default': '',
+            'description': _('leave empty for no title'),
+        },
         'SLIDE_DURATION': {
             'name': _('Slide Duration'),
             'description': _('duration for each slides in slideshow (in s)'),
@@ -130,6 +135,7 @@ class KioskDashboard(UrlsMixin, SettingsMixin, LabManagerPlugin):
 @permission_classes([IsAuthenticated])
 def view_dash(request):
     ### get the settings 
+    main_title = KioskDashboard.get_setting(KioskDashboard(), key="MAIN_TITLE")
     duration = KioskDashboard.get_setting(KioskDashboard(), key="SLIDE_DURATION")
     p1_dur = KioskDashboard.get_setting(KioskDashboard(), key="PAGE1_DUR")
     p2_dur = KioskDashboard.get_setting(KioskDashboard(), key="PAGE2_DUR")
@@ -283,6 +289,7 @@ def view_dash(request):
             "duration":duration,
             "reload_interval":reload_interval,
             "show_title":show_title,
+            "main_title":main_title,
         },
         "pages": pages,
     }
