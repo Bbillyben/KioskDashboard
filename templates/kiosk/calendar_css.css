@@ -1,4 +1,33 @@
 /* for calendar */
+
+.fc-resource .fc-datagrid-cell-frame{
+  height:35px !important;
+}
+.fc .fc-datagrid-cell-cushion{
+  padding-top: 5px!important;
+  font-size: small;
+
+}
+ .fc-timeline-lane .fc-timeline-events {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.fc-timeline-event-harness,
+.fc-timeline-event {
+  height: 25px !important;
+  margin-top:2px!important;
+}
+
+.fc .fc-event-main {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  line-height: 1.1;
+} 
+
+.fc .fc-timeline-lane-frame {
+  height: 35px !important;
+}
+
 {% if theme == "white" %}
   .fc-timeline-slot-lane.fc-day-sat, .fc-timeline-slot-lane.fc-day-sun, .fc-timeline-slot-lane.fc-slot-sat, .fc-timeline-slot-lane.fc-slot-sun{
     background-color: rgba(211, 211, 211, 0.322);
