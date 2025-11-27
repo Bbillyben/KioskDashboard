@@ -1,5 +1,5 @@
 /* for calendar */
-
+{% if events_count %}
 .fc-resource .fc-datagrid-cell-frame{
   height:35px !important;
 }
@@ -27,7 +27,7 @@
 .fc .fc-timeline-lane-frame {
   height: 35px !important;
 }
-
+{%endif%}
 {% if theme == "white" %}
   .fc-timeline-slot-lane.fc-day-sat, .fc-timeline-slot-lane.fc-day-sun, .fc-timeline-slot-lane.fc-slot-sat, .fc-timeline-slot-lane.fc-slot-sun{
     background-color: rgba(211, 211, 211, 0.322);

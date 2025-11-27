@@ -72,6 +72,12 @@ class KioskDashboard(UrlsMixin, SettingsMixin, LabManagerPlugin):
             'default': True,
             'validator': [bool],
         },
+        'CALENDAR_MINI': {
+            'name': _('Switch to small calendar Row'),
+            'description': _('number of leaves to switch to smaller calendar row'),
+            'default': 10,
+            'validator': [int, MinValueValidator(1)]
+        },
         'CALENDAR_DUR': {
             'name': _('Calendar view'),
             'description': _('How many days will be displayed in calendar (in days)'),
@@ -149,6 +155,8 @@ def view_dash(request):
     api_key = KioskDashboard.get_setting(KioskDashboard(), key="NCBI_KEY")
     api_search = KioskDashboard.get_setting(KioskDashboard(), key="NCBI_SEARCH")
     api_max = KioskDashboard.get_setting(KioskDashboard(), key="NCBI_MAX")
+    cal_min = KioskDashboard.get_setting(KioskDashboard(), key="CALENDAR_MINI")
+    
     #######   Calendrier des absences
     queryset = Leave.objects.select_related('employee', 'type').all()
     now = datetime.datetime.now()
@@ -168,6 +176,7 @@ def view_dash(request):
             "id":1,
             'events': json.dumps(serializers.LeaveSerializer1DCal(qset, many=True).data, cls=DjangoJSONEncoder, ensure_ascii=False),
             'resources': json.dumps(serializers.EmployeeSerialize_Cal(emp, many=True).data, cls=DjangoJSONEncoder, ensure_ascii=False),
+            'events_count':qset.count()>=cal_min,
             'calendar_dur':int(calendar_dur),
             'theme':theme,
             'leaves':curr_leave,
