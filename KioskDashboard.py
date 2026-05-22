@@ -247,7 +247,12 @@ def view_dash(request):
         root = ET.fromstring(response.text)
 
         for article in root.findall('.//PubmedArticle'):
-            title = article.find('.//ArticleTitle').text if article.find('.//ArticleTitle') is not None else "No title"
+            #title = article.find('.//ArticleTitle').text if article.find('.//ArticleTitle') is not None else "No title"
+            title_el = article.find('.//ArticleTitle')
+            if title_el is not None:
+                title = ''.join(title_el.itertext()).strip()
+            else:
+                title = "No title"
             authors = ", ".join([author.text for author in article.findall('.//Author/LastName')])
             journal = article.find('.//Journal/Title').text if article.find('.//Journal/Title') is not None else "No journal"
             abstract = article.find('.//AbstractText').text if article.find('.//AbstractText') is not None else "No abstract"
