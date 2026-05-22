@@ -249,13 +249,12 @@ def view_dash(request):
         for article in root.findall('.//PubmedArticle'):
             #title = article.find('.//ArticleTitle').text if article.find('.//ArticleTitle') is not None else "No title"
             title_el = article.find('.//ArticleTitle')
-            if title_el is not None:
-                title = ''.join(title_el.itertext()).strip()
-            else:
-                title = "No title"
+            title = ''.join(title_el.itertext()).strip() if title_el is not None else title = 'No Title'
+
             authors = ", ".join([author.text for author in article.findall('.//Author/LastName')])
             journal = article.find('.//Journal/Title').text if article.find('.//Journal/Title') is not None else "No journal"
-            abstract = article.find('.//AbstractText').text if article.find('.//AbstractText') is not None else "No abstract"
+            abstract_el = article.find('.//AbstractText')
+            abstract = ''.join(abstract_el.itertext()).strip() if abstract_el is not None else 'No Abstract'
             
             pub_date = ""
             pub_date_element = article.find('.//PubDate')
